@@ -103,6 +103,12 @@ jobs:
             artifact_name: Jellyfin-10.9.z-secondary
             legacy: false
             secondary: true
+          - tag: old_intro
+            repository: jellyfin/jellyfin-web
+            artifact_name: Jellyfin-10.9.z-old
+            legacy: false
+            old_tizen: true
+            inject_intros: true
 
     steps:
       - run: env

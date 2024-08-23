@@ -184,6 +184,12 @@ jobs:
             rm icon.png
             mv ../icon2.png icon.png
           fi
+
+          if ${{ matrix.old_tizen == true }}; then
+            rm icon.png
+            wget -o icon.png https://user-images.githubusercontent.com/10453588/222962382-7c557f2c-575d-4023-92bd-55c0ead15185.png
+          fi
+          
           
           if ${{ matrix.legacy == true }}; then
             DISCARD_UNUSED_FONTS=1 JELLYFIN_WEB_DIR=../jellyfin-web/dist npm ci --no-audit

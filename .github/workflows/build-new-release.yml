@@ -1,4 +1,4 @@
-wget https://user-images.githubusercontent.com/10453588/222962382-7c557f2c-575d-4023-92bd-55c0ead15185.png -O icon.pngname: Build New Release
+name: Build New Release
 
 on:
   repository_dispatch:

@@ -103,7 +103,7 @@ jobs:
             artifact_name: Jellyfin-10.9.z-secondary
             legacy: false
             secondary: true
-          - tag: old_intro
+          - tag: release-10.9.z
             repository: jellyfin/jellyfin-web
             artifact_name: Jellyfin-10.9.z-old
             legacy: false

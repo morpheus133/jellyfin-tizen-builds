@@ -30,9 +30,15 @@ jobs:
   run-info:
     name: Show run info
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
       - name: Output Inputs
-        run: echo "${{ toJSON(github.event.inputs) }}"
+        run: |
+          echo "${{ toJSON(github.event.inputs) }}"
+          releas="${{ github.event.inputs.webReleaseTagName}}"
+          echo ${releas:1}
+          asa=${releas:1}
+          echo ${asa}
 
   build:
     name: Build artifacts
@@ -185,6 +191,17 @@ jobs:
         id: buildMaster
         run: |
           cd jellyfin-tizen
+          if ${{ matrix.artifact_name == 'Jellyfin' }}; then
+            versionn="${{ github.event.inputs.webReleaseTagName}}"
+            version=${versionn:1}
+          else
+            # Remove Jellyfin-
+            versionn="${{ matrix.artifact_name }}"
+            version=${versionn:9}
+          fi
+
+          sed -i "/version/c\  \\\"version\" : \"${version}\"," package.json
+          sed -i "s/Jellyfin\" version=.*\" /Jellyfin\" version=\"$version\" /" config.xml 
 
           if ${{ matrix.true_hd == true }}; then
             sed -i 's/enableSsaRender: true/enableSsaRender: true, supportsTrueHd: true/g' tizen.js
@@ -220,6 +237,10 @@ jobs:
         if: success() || steps.buildMaster.conclusion == 'success'
         run: |
           expect ./package.exp
+          if ${{ matrix.artifact_name == 'Jellyfin' }}; then
+            versionn="${{ github.event.inputs.webReleaseTagName}}"
+            version=${versionn:1}
+          fi
           if ${{ matrix.artifact_name != 'Jellyfin' }}; then
 
             if ${{ matrix.secondary == true }}; then
@@ -228,6 +249,11 @@ jobs:
               mv "./jellyfin-tizen/release/Jellyfin.wgt" "./jellyfin-tizen/release/${{ matrix.artifact_name }}.wgt"
             fi
           fi
+          if ${{ matrix.artifact_name == 'Jellyfin' }}; then
+            mv "./jellyfin-tizen/release/Jellyfin.wgt" "./jellyfin-tizen/release/Jellyfin-${version}.wgt"
+          fi
+        
+            
           
       - name: Print logs
         if: always()
